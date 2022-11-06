@@ -7,7 +7,7 @@ Created on Tue Nov  1 09:59:35 2022
 
 
 set_current_path = 'C:\\Users\\lparola'
-import torch 
+import torch
 import os
 import pickle
 import numpy as np
@@ -23,7 +23,7 @@ os.chdir(os.path.join(set_current_path,'Box','Lauren-Projects','Code','JointAngl
 #from demo import butter_low
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-#inputs 
+#inputs
 args = {}
 
 args['Activity'] = 'Walking'
@@ -44,7 +44,7 @@ def butter_low(data, order=4, fc=5, fs=100):
     Zero-lag butterworth filter for column data (i.e. padding occurs along axis 0).
     The defaults are set to be reasonable for standard optoelectronic data.
     """
-        
+
     # Filter design
     b, a = butter(order, 2*fc/fs, 'low')
     # Make sure the padding is neither overkill nor larger than sequence length permits
@@ -76,12 +76,12 @@ for subject in subject_list:
     data_path = os.path.join(main_data_path,subject)
     result_dict = {}
     activity_dict = {}
-    
+
     for activity in os.listdir(data_path):
         temp_path = os.path.join(data_path,activity)
         if 'Trial' in activity:
             activity_dict[activity] = {}
-        
+
             for i in ['Left','Right']:
                args['Side'] = i
                acc1 = np.load(os.path.join(temp_path,'IMU',args['Side'].lower()+' lateral '+SegJointDict[args['Joint']][0],args['Side'].lower()+' lateral '+SegJointDict[args['Joint']][0]+' acc.npy'))
@@ -96,29 +96,29 @@ for subject in subject_list:
                    _data = np.concatenate((data, mag), axis=-1)
                    print(np.shape(_data))
                    inputs += [_data]
-        
+
                inputs = np.concatenate(inputs, axis=-1)
                inputs = torch.from_numpy(inputs).to(device=device).float()
-        
-        
+
+
         # Normalize input data
                norm_dict = torch.load(os.path.join(os.getcwd(),'nn_models','models','checkpoints',args['Activity'],args['Joint']+'_norm_dict.pt'))['params']
                print(str(norm_dict["x_mean"])+' +/-'+str(norm_dict['x_std']))
-        
+
                inputs = (inputs - norm_dict['x_mean']) / norm_dict['x_std']
-                   
+
                LSTM_model.eval()
                t1 = time()
                pred = LSTM_model(inputs)
                t2 = time()
-        
+
         # Unnormalize prediction
                pred = pred * norm_dict['y_std'] + norm_dict['y_mean']
                pred = pred.detach().cpu().numpy()
                ground_truth = butter_low(ground_truth)
                pred = pd.DataFrame(data=pred.squeeze(0),columns=['Flexion','Add/Abd','Int/Ext Rot'])
                ground_truth = pd.DataFrame(data=ground_truth,columns=['Add/Abd','Int/Ext Rot','Flexion',])
-               
+
                pred = pred - pred.mean(axis=0) + ground_truth.mean(axis=0)
                rmse = np.sqrt(np.square(pred - ground_truth).mean(axis=0))
                print(rmse)
@@ -127,30 +127,30 @@ for subject in subject_list:
                temp_dict['Ground Truth'] = pd.DataFrame(data=ground_truth,columns=['Add/Abd','Int/Ext Rot','Flexion',])
                temp_dict['RMSE'] =rmse
                activity_dict[activity][args['Side']] = temp_dict
-    
-    
+
+
     for i in activity_dict:
         fig, ax = plt.subplots(3)
         plt.suptitle(args['Subject']+' '+i)
         ax[0].plot(activity_dict[i]['Left']['Prediction']['Flexion'],label='Left',color='red')
         ax[0].plot(activity_dict[i]['Right']['Prediction']['Flexion'],label='Right',color='red',linestyle=':')
         plt.legend()
-        
+
         ax[0].plot(activity_dict[i]['Left']['Ground Truth']['Flexion'],color='blue')
         ax[0].plot(activity_dict[i]['Right']['Ground Truth']['Flexion'],color='blue',linestyle=':')
-    
+
         ax[1].plot(activity_dict[i]['Left']['Prediction']['Add/Abd'],label='Left',color='red')
         ax[1].plot(activity_dict[i]['Right']['Prediction']['Add/Abd'],label='Right',color='red',linestyle=':')
         plt.legend()
-        
+
         ax[1].plot(activity_dict[i]['Left']['Ground Truth']['Add/Abd'],color='blue')
         ax[1].plot(activity_dict[i]['Right']['Ground Truth']['Add/Abd'],color='blue',linestyle=':')
-    
+
         ax[2].plot(activity_dict[i]['Left']['Prediction']['Int/Ext Rot'],label='Left',color='red')
         ax[2].plot(activity_dict[i]['Right']['Prediction']['Int/Ext Rot'],label='Right',color='red',linestyle=':')
         plt.legend()
-        
+
         ax[2].plot(activity_dict[i]['Left']['Ground Truth']['Int/Ext Rot'],color='blue')
         ax[2].plot(activity_dict[i]['Right']['Ground Truth']['Int/Ext Rot'],color='blue',linestyle=':')
-        
+
         plt.savefig('C:\\Users\\lparola\\Box\\Lauren-Projects\\Figures\\Trouble Shooting\\Ground Truth Noise'+subject+i+'.png')

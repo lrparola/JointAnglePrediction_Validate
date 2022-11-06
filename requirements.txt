@@ -1,0 +1,8 @@
+numpy
+scikit-image
+opencv-python
+tqdm
+yacs
+configargparse
+requests
+torch
