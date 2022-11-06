@@ -15,6 +15,9 @@ from time import time
 import matplotlib.pyplot as plt
 from scipy.signal import butter, filtfilt
 import pandas as pd
+
+
+#Make this the path of your model is stored
 os.chdir(os.path.join(set_current_path,'Box','Lauren-Projects','Code','JointAnglePrediction_JOB'))
 
 #from demo import butter_low
@@ -25,10 +28,8 @@ args = {}
 
 args['Activity'] = 'Walking'
 args['Joint']='Knee'
-args['Subject'] = 'PS002'
-args['Side'] = 'Left'
 SegJointDict = {'Hip': ['pelvis', 'thigh'], 'Knee': ['thigh', 'shank'], 'Ankle': ['shank', 'foot']}
-#CNN
+
 
 import pickle
 from nn_models.models.pure_conv import CustomConv1D
@@ -62,14 +63,17 @@ LSTM_model = globals()[kwargs['model_type']](**kwargs)
 
 LSTM_model.load_state_dict(torch.load(os.path.join(os.getcwd(),'nn_models','models','checkpoints',args['Activity'],args['Joint']+'_model.pt')))
 LSTM_model.to('cuda')
-subject_list =[i for i in os.listdir('F:\\ACLR_Pilot_1\\') if 'S00' in i]
+
+
+
+#input location of IMU Mocap Output Data
+main_data_path = 'C:\\Users\\lparola\\Box\\CMU_MBL\\5_Datasets\\ACLR_Pilot_1\\IMU_Mocap_Output_Data'
+
+
+subject_list =[i for i in os.listdir(main_data_path) if 'S00' in i]
 for subject in subject_list:
-    args['Subject'] =subject
-#organize data aligned with mocap
-    data_loc = 'F:\\ACLR_Pilot_1\\'+args['Subject']
-    if 'P' in args['Subject']:
-        data_loc = os.path.join(data_loc,'Three Month')
-    data_path = os.path.join(data_loc,'Output_Data')
+    args['Subject'] =subject.split('_')[0]
+    data_path = os.path.join(main_data_path,subject)
     result_dict = {}
     activity_dict = {}
     
