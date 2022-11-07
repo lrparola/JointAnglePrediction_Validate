@@ -46,3 +46,15 @@ $ Directory tree
         ├── HS003_Output_Data\
         ├── ...
 ```
+<br><br>
+
+## 3. Preprocess data
+Run the following commandline to preprocess train & test data. 
+``` 
+python -m lib.data.preprocess_data
+```
+You will have `test_data_label.pt` and `train_data_label.pt` under the `IMU_Mocap_Output_Data` folder.
+
+<br><br>
+
+## 4. To be continued ...
