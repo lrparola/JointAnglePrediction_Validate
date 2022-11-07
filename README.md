@@ -16,9 +16,9 @@ pip install -r requirements.txt
 ## 2. Data structure
 Run the following commandline (for Linux user)
 ```
-mkdir data
+mkdir dataset
 python -m lib.utils.download_models
-cd data/
+cd dataset/
 unzip models.zip
 ln -s <IMU_Mocap data path> ./IMU_Mocap_Output_Data
 cd ../
@@ -29,7 +29,7 @@ The required data folder structure would be as below
 ```
 $ Directory tree
 .
-├── data\
+├── dataset\
     ├── models\
     │    ├── checkpoints\ 
     │         ├── Running\
