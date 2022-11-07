@@ -1,10 +1,10 @@
 
 
 class PATHS:
-    MODEL_CHECKPOINT = 'data/models/checkpoints'
-    DATA = 'data/IMU_Mocap_Output_Data'
-    TRAIN_DATA_LABEL = 'data/IMU_Mocap_Output_Data/train_data_label.pt'
-    TEST_DATA_LABEL = 'data/IMU_Mocap_Output_Data/test_data_label.pt'
+    MODEL_CHECKPOINT = 'dataset/models/checkpoints'
+    DATA = 'dataset/IMU_Mocap_Output_Data'
+    TRAIN_DATA_LABEL = 'dataset/IMU_Mocap_Output_Data/train_data_label.pt'
+    TEST_DATA_LABEL = 'dataset/IMU_Mocap_Output_Data/test_data_label.pt'
 
 
 class DATA:

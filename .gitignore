@@ -2,7 +2,7 @@
 tmp/
 output/
 *.out
-data/
+dataset/
 logger/
 
 # Byte-compiled / optimized / DLL files
