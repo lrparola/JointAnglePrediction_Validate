@@ -36,5 +36,5 @@ def save_response_content(response, destination):
 
 
 if __name__ == '__main__':
-    download_file_from_google_drive('1bJJ_lw9XcaiJB83P5n23A1ojrFRlAqQR', './data/models.zip')
+    download_file_from_google_drive('1bJJ_lw9XcaiJB83P5n23A1ojrFRlAqQR', './dataset/models.zip')
 
