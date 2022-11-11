@@ -11,16 +11,16 @@ import os
 import os.path as osp
 
 import torch
-
+import torch.nn as nn
 from pdb import set_trace as st
 
 
 def train_one_epoch(net, optimizer, train_dloader, device, **kwargs):
     net.train()
-
+    criterion = nn.CrossEntropyLoss()
     for _iter, batch in enumerate(train_dloader):
         x_in, y_gt = batch
-
+        import pdb; pdb.set_trace()
         # Concatenate left and right leg
         x_in = torch.reshape(-1, *x_in.shape[-2:]).to(device)
         y_gr = torch.reshape(-1, *y_gt.shape[-2:]).to(device)
@@ -29,7 +29,8 @@ def train_one_epoch(net, optimizer, train_dloader, device, **kwargs):
         y_pred = net(x_in)
 
         # Calculate loss
-        # loss =
+        loss = criterion(y_pred, y_gr)
+       
 
 
 def main(**kwargs):
