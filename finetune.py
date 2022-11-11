@@ -22,8 +22,8 @@ def train_one_epoch(net, optimizer, train_dloader, device, **kwargs):
         x_in, y_gt = batch
         import pdb; pdb.set_trace()
         # Concatenate left and right leg
-        x_in = torch.reshape(-1, *x_in.shape[-2:]).to(device)
-        y_gr = torch.reshape(-1, *y_gt.shape[-2:]).to(device)
+        x_in = x_in.reshape(-1, *x_in.shape[-2:]).to(device)
+        y_gr = y_gt.reshape(-1, *y_gt.shape[-2:]).to(device)
 
         # Predict
         y_pred = net(x_in)
