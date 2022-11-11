@@ -28,6 +28,8 @@ def parse_config(args=None):
                         help='Use CUDA for the computations')
     parser.add_argument('--optim_type', type=str, default='adam',
                         help='The optimizer used')
+    parser.add_argument('--train_linear_layer', type=str, default=False,
+                        help='train linear layer or all')
     parser.add_argument('--epochs', type=int, default=999,
                         help='The number of epochs to finetune')
     parser.add_argument('--batch_size', type=int, default=16,
