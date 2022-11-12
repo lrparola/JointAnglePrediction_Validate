@@ -44,7 +44,10 @@ def preprocess(subjects, is_train):
             temp_angles = []
             mocap_dir = osp.join(subject_dir, trial, 'Mocap')
             for joint in _C.DATA.JOINT_LIST:
+                #MOCAP CS X-adduction/abduction Y- internal/external rotation Z-flexion/extension
                 angle = np.load(osp.join(mocap_dir, joint, f'{joint} angle.npy'))
+                #change to IK code output set up outputted from from IK code
+                angle[:,[0,1,2]] = x[:,[2,0,1]]
                 temp_angles.append(torch.from_numpy(angle).unsqueeze(1).float())
             temp_angles = torch.cat(temp_angles, dim=1)
             angles.append(temp_angles)
