@@ -11,7 +11,7 @@ import os
 import os.path as osp
 
 import torch
-import torch.nn as nn
+
 from pdb import set_trace as st
 
 
@@ -31,8 +31,6 @@ def train_one_epoch(net, optimizer, train_dloader, device, **kwargs):
         # Calculate loss
         loss = criterion(y_pred, y_gr)
        
-
-
 def main(**kwargs):
     use_cuda = args.get('use_cuda', True)
     if use_cuda and not torch.cuda.is_available():

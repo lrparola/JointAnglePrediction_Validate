@@ -24,18 +24,6 @@ ln -s <IMU_Mocap data path> ./IMU_Mocap_Output_Data
 cd ../
 ```
 
-Run the following commandline (for Windows)( to use mklink with less 
-than windows 11 operating system, need to be running terminal as an administrator)
-```
-cd JointAnglePrediction_Validate
-mkdir dataset
-python -m lib.utils.download_models
-cd dataset/
-tar -xf models.zip
-mklink /d <folder> <file location>
-```
-
-
 <br><br>
 The required data folder structure would be as below
 ```
