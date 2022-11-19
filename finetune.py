@@ -2,12 +2,12 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import division
 
-import torch
-import torch.nn as nn
 from configs.cmd_parse import parse_config
 from lib.data.dloader import setup_validation_data
 from lib.models.builder import build_nn_model, build_optimizer
 
+import torch
+import torch.nn as nn
 import sys
 import os
 import os.path as osp
@@ -22,7 +22,7 @@ def train_one_epoch(net, optimizer, train_dloader, device, **kwargs):
     criterion = nn.MSELoss()
     for _iter, batch in enumerate(train_dloader):
         x_in, y_gt = batch
-        import pdb; pdb.set_trace()
+        
         # Concatenate left and right leg
         x_in = x_in.reshape(-1, *x_in.shape[-2:]).to(device)
         y_gr = y_gt.reshape(-1, *y_gt.shape[-2:]).to(device)
@@ -44,6 +44,7 @@ def main(**kwargs):
     net.to(device=device)
 
     optimizer = build_optimizer(net, **kwargs)
+    import pdb; pdb.set_trace()
 
     train_dloader = setup_validation_data(norm_dict, **kwargs)
     # eval_dloader
