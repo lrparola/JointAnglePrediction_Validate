@@ -17,7 +17,7 @@ from pdb import set_trace as st
 
 def train_one_epoch(net, optimizer, train_dloader, device, **kwargs):
     net.train()
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.MSELoss()
     for _iter, batch in enumerate(train_dloader):
         x_in, y_gt = batch
         import pdb; pdb.set_trace()
