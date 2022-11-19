@@ -2,6 +2,8 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import division
 
+import torch
+import torch.nn as nn
 from configs.cmd_parse import parse_config
 from lib.data.dloader import setup_validation_data
 from lib.models.builder import build_nn_model, build_optimizer
