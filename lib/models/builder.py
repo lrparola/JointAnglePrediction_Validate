@@ -42,7 +42,7 @@ def build_optimizer(net=None,
                     lr=None,
                     beta=None,
                     **kwargs):
-    #import pdb; pdb.set_trace()
+
     if optim_type == 'adam':
         if kwargs['train_linear_layer'] == True:
             try:
@@ -54,7 +54,6 @@ def build_optimizer(net=None,
         else:
             optimizer = torch.optim.Adam(
             net.parameters(), lr=lr, betas=(beta, 0.999))
-        
     else:
         raise NotImplementedError
 
