@@ -63,7 +63,6 @@ def preprocess(subjects, is_train):
         out_fname
     )
 
-
 if __name__ == '__main__':
     train_subjects = ['HS001', 'HS003', 'HS004', 'HS005']
     test_subjects = ['HS006', 'HS007']
