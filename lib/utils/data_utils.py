@@ -23,13 +23,13 @@ def normalize_new_data(imu_data1, imu_data2):
     
     norm_dict = {}
     norm_dict['params'] = {}
-    norm_dict['params']['x_mean'] = [acc1_mean, gyr1_mean, acc2_mean, gyr2_mean]
+    norm_dict['params']['x_mean'] = torch.cat((acc1_mean, gyr1_mean, acc2_mean, gyr2_mean),dim=-1)
     
     acc1_std = torch.cat(torch.std(imu_data1[:, :3]),torch.std(normalize(imu_data1[:, :3])))
     gyr1_std = torch.cat(torch.std(imu_data1[:, 3:]),torch.std(normalize(imu_data1[:, 3:])))
     acc2_std = torch.cat(torch.std(imu_data2[:, :3]),torch.std(normalize(imu_data2[:, :3])))
     gyr2_std =torch.cat(torch.std(imu_data2[:, 3:]),torch.std(normalize(imu_data2[:, 3:])))
-    norm_dict['params']['x_std'] = [acc1_std, gyr1_std, acc2_std, gyr2_std]
+    norm_dict['params']['x_std'] = toch.cat((acc1_std, gyr1_std, acc2_std, gyr2_std),dim=-1)
     
     return norm_dict
     
