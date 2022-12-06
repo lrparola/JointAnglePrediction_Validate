@@ -86,7 +86,7 @@ def setup_validation_data(norm_dict=None,
     n_workers = 0
 
     train_dataset = Dataset(_C.PATHS.TRAIN_DATA_LABEL, joint, norm_dict, **kwargs)
-    import pdb; pdb.set_trace()
+    test_dataset = Dataset(_C.PATHS.TEST_DATA_LABEL, joint, norm_dict, **kwargs)
     train_dloader = torch.utils.data.DataLoader(
         train_dataset,
         batch_size=batch_size // 2,
@@ -94,5 +94,11 @@ def setup_validation_data(norm_dict=None,
         shuffle=True,
         pin_memory=True,
     )
-
-    return train_dloader
+    test_dloader = torch.utils.data.DataLoader(
+        test_dataset,
+        batch_size=batch_size // 2,
+        num_workers=n_workers,
+        shuffle=True,
+        pin_memory=True,
+    )
+    return train_dloader, test_dloader
