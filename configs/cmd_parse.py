@@ -34,7 +34,7 @@ def parse_config(args=None):
                         help='The number of epochs to finetune')
     parser.add_argument('--batch_size', type=int, default=16,
                         help='The size of mini batch')
-    parser.add_argument('--lr', type=float, default=1.,
+    parser.add_argument('--lr', type=float, default=1e-4,
                         help='The learning rate for the algorithm')
     parser.add_argument('--beta', type=float, default=.9,
                         help='The momentum coefficient for the optimization')

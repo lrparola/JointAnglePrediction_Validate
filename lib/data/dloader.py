@@ -12,13 +12,35 @@ from skimage.util.shape import view_as_windows
 from pdb import set_trace as st
 
 
+class Normalizer:
+    def __init__(self, norm_dict):
+        self.x_mean = norm_dict['params']['x_mean'].detach().cpu()
+        self.x_std = norm_dict['params']['x_std'].detach().cpu()
+        self.y_mean = norm_dict['params']['y_mean'].detach().cpu()
+        self.y_std = norm_dict['params']['y_std'].detach().cpu()
+
+    def normalize_input(self, x):
+        return (x - self.x_mean) / self.x_std
+
+    def normalize_output(self, y):
+        return (y - self.y_mean) / self.y_std
+
+    def unnormalize_input(self, x):
+        return x * self.x_std + self.x_mean
+    
+    def unnormalize_output(self, y):
+        return y * self.y_std + self.y_mean
+
+
 class Dataset(torch.utils.data.Dataset):
-    def __init__(self, label_pth, joint, norm_dict, **kwargs):
+    def __init__(self, label_pth, joint, norm_dict, is_train=True, **kwargs):
         super(Dataset, self).__init__()
 
         self.labels = torch.load(label_pth)
         self.joint = joint
-        self.norm_dict = norm_dict
+        self.is_train = is_train
+
+        self.normalizer = Normalizer(norm_dict)
         self.prepare_sequence_batch(kwargs.get('input_length', 400))
         self.kwargs =kwargs
 
@@ -34,14 +56,18 @@ class Dataset(torch.utils.data.Dataset):
         indices = np.split(
             np.arange(0, seqs.shape[0]), group_perm[1:]
         )
+        
         for idx in range(len(seqs_unique)):
             indexes = indices[idx]
-            if indexes.shape[0] < seq_length: continue
-            chunks = view_as_windows(
-                indexes, (seq_length), step=seq_length // 4
-            )
-            start_finish = chunks[:, (0, -1)].tolist()
-            self.seq_indices += start_finish
+            if self.is_train:
+                if indexes.shape[0] < seq_length: continue
+                chunks = view_as_windows(
+                    indexes, (seq_length), step=seq_length // 4
+                )
+                start_finish = chunks[:, (0, -1)].tolist()
+                self.seq_indices += start_finish
+            else:
+                self.seq_indices += indexes[None, (0, -1)].tolist()
 
 
     def __len__(self):
@@ -49,7 +75,6 @@ class Dataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         return self.get_single_sequence(index,self.kwargs)
-
 
     def get_single_sequence(self, index,kwargs):
         start_index, end_index = self.seq_indices[index]
@@ -66,11 +91,13 @@ class Dataset(torch.utils.data.Dataset):
             if kwargs['validation_norm_dict'] == True:
                 self.norm_dict = normalize_new_data(*temp_imu)
                 
-            imu = process_imu_data(*temp_imu, self.norm_dict)
+            imu = process_imu_data(*temp_imu) #, self.norm_dict)
+            imu = self.normalizer.normalize_input(imu)
             imus.append(imu)
 
             angle = all_angle[:, _C.DATA.JOINT_LIST.index(trg_joint)]
-            angle = normalize_angle(angle, self.norm_dict)
+            angle = self.normalizer.normalize_output(angle)
+            # angle = normalize_angle(angle, self.norm_dict)
             angles.append(angle)
 
         imus = torch.stack(imus)
@@ -85,8 +112,8 @@ def setup_validation_data(norm_dict=None,
                           **kwargs):
     n_workers = 0
 
-    train_dataset = Dataset(_C.PATHS.TRAIN_DATA_LABEL, joint, norm_dict, **kwargs)
-    test_dataset = Dataset(_C.PATHS.TEST_DATA_LABEL, joint, norm_dict, **kwargs)
+    train_dataset = Dataset(_C.PATHS.TRAIN_DATA_LABEL, joint, norm_dict, is_train=True, **kwargs)
+    test_dataset = Dataset(_C.PATHS.TEST_DATA_LABEL, joint, norm_dict, is_train=False, **kwargs)
     train_dloader = torch.utils.data.DataLoader(
         train_dataset,
         batch_size=batch_size // 2,
@@ -94,11 +121,13 @@ def setup_validation_data(norm_dict=None,
         shuffle=True,
         pin_memory=True,
     )
+    
     test_dloader = torch.utils.data.DataLoader(
         test_dataset,
-        batch_size=batch_size // 2,
+        batch_size=1,
         num_workers=n_workers,
         shuffle=True,
         pin_memory=True,
     )
+    
     return train_dloader, test_dloader
