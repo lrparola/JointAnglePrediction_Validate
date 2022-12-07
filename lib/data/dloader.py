@@ -3,7 +3,7 @@ from __future__ import print_function
 from __future__ import division
 
 from configs import constants as _C
-from lib.utils.data_utils import normalize_angle, process_imu_data
+from lib.utils.data_utils import normalize_angle, process_imu_data, normalize_new_data
 
 import torch
 import numpy as np
@@ -20,6 +20,7 @@ class Dataset(torch.utils.data.Dataset):
         self.joint = joint
         self.norm_dict = norm_dict
         self.prepare_sequence_batch(kwargs.get('input_length', 400))
+        self.kwargs =kwargs
 
 
     def prepare_sequence_batch(self, seq_length):
@@ -47,10 +48,10 @@ class Dataset(torch.utils.data.Dataset):
         return len(self.seq_indices)
 
     def __getitem__(self, index):
-        return self.get_single_sequence(index)
+        return self.get_single_sequence(index,self.kwargs)
 
 
-    def get_single_sequence(self, index):
+    def get_single_sequence(self, index,kwargs):
         start_index, end_index = self.seq_indices[index]
         all_imu = self.labels['imu'][start_index:end_index+1]
         all_angle = self.labels['angle'][start_index:end_index+1]
@@ -60,7 +61,11 @@ class Dataset(torch.utils.data.Dataset):
             trg_joint = side[0] + self.joint.lower()
             temp_imu = []
             for sensor in _C.DATA.JOINT_IMU_MAPPER[trg_joint]:
-                temp_imu.append(all_imu[:, _C.DATA.IMU_LIST.index(sensor)])
+                temp_imu.append(all_imu[:, _C.DATA.IMU_LIST.index(sensor)])    
+
+            if kwargs['validation_norm_dict'] == True:
+                self.norm_dict = normalize_new_data(*temp_imu)
+                
             imu = process_imu_data(*temp_imu, self.norm_dict)
             imus.append(imu)
 
@@ -81,6 +86,7 @@ def setup_validation_data(norm_dict=None,
     n_workers = 0
 
     train_dataset = Dataset(_C.PATHS.TRAIN_DATA_LABEL, joint, norm_dict, **kwargs)
+    test_dataset = Dataset(_C.PATHS.TEST_DATA_LABEL, joint, norm_dict, **kwargs)
     train_dloader = torch.utils.data.DataLoader(
         train_dataset,
         batch_size=batch_size // 2,
@@ -88,5 +94,11 @@ def setup_validation_data(norm_dict=None,
         shuffle=True,
         pin_memory=True,
     )
-
-    return train_dloader
+    test_dloader = torch.utils.data.DataLoader(
+        test_dataset,
+        batch_size=batch_size // 2,
+        num_workers=n_workers,
+        shuffle=True,
+        pin_memory=True,
+    )
+    return train_dloader, test_dloader

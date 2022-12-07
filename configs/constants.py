@@ -11,14 +11,13 @@ class DATA:
     IMU_LIST = ['left lateral shank', # 'left posterior shank',
                 'left lateral thigh', # 'left posterior thigh',
                 'right lateral shank', # 'right posterior shank',
-                'right lateral thigh', # 'right posterior thigh',
-                'sacrum']
+                'right lateral thigh',] # 'right posterior thigh',]
 
-    JOINT_LIST = ['lhip', 'lknee', 'rhip', 'rknee']
-
+    #JOINT_LIST = ['lhip', 'lknee', 'rhip', 'rknee']
+    JOINT_LIST = [ 'lknee',  'rknee']
     JOINT_IMU_MAPPER = {
-        'lhip': ['sacrum', 'left lateral thigh'],
+     #   'lhip': ['sacrum', 'left lateral thigh'],
         'lknee': ['left lateral thigh', 'left lateral shank'],
-        'rhip': ['sacrum', 'right lateral thigh'],
+     #   'rhip': ['sacrum', 'right lateral thigh'],
         'rknee': ['right lateral thigh', 'right lateral shank']}
 

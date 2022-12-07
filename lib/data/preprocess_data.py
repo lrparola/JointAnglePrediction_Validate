@@ -44,6 +44,7 @@ def preprocess(subjects, is_train):
             temp_angles = []
             mocap_dir = osp.join(subject_dir, trial, 'Mocap')
             for joint in _C.DATA.JOINT_LIST:
+
                 #MOCAP CS X-adduction/abduction Y- internal/external rotation Z-flexion/extension
                 angle = np.load(osp.join(mocap_dir, joint, f'{joint} angle.npy'))
                 #change to IK code output set up outputted from from IK code
@@ -63,9 +64,8 @@ def preprocess(subjects, is_train):
         out_fname
     )
 
-
 if __name__ == '__main__':
-    train_subjects = ['HS001', 'HS003', 'HS004', 'HS005']
-    test_subjects = ['HS006', 'HS007']
+    train_subjects = ['HS001', 'HS003', 'HS004', 'HS005','PS001','PS002','PS003','PS004',]
+    test_subjects = ['HS006', 'HS007','PS006']
     preprocess(train_subjects, True)
     preprocess(test_subjects, False)

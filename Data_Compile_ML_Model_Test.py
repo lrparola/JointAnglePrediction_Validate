@@ -67,7 +67,7 @@ LSTM_model.to('cuda')
 
 
 #input location of IMU Mocap Output Data
-main_data_path = 'C:\\Users\\lparola\\Box\\CMU_MBL\\5_Datasets\\ACLR_Pilot_1\\IMU_Mocap_Output_Data'
+main_data_path = 'C:\\Users\\lparola\\Box\\CMU_MBL\\5_Datasets\\ACLR_Pilot_1'
 
 
 subject_list =[i for i in os.listdir(main_data_path) if 'S00' in i]
@@ -78,6 +78,7 @@ for subject in subject_list:
     activity_dict = {}
 
     for activity in os.listdir(data_path):
+        print(activity)
         temp_path = os.path.join(data_path,activity)
         if 'Trial' in activity:
             activity_dict[activity] = {}
@@ -132,9 +133,13 @@ for subject in subject_list:
     for i in activity_dict:
         fig, ax = plt.subplots(3)
         plt.suptitle(args['Subject']+' '+i)
+        
+        
         ax[0].plot(activity_dict[i]['Left']['Prediction']['Flexion'],label='Left',color='red')
         ax[0].plot(activity_dict[i]['Right']['Prediction']['Flexion'],label='Right',color='red',linestyle=':')
         plt.legend()
+        
+
 
         ax[0].plot(activity_dict[i]['Left']['Ground Truth']['Flexion'],color='blue')
         ax[0].plot(activity_dict[i]['Right']['Ground Truth']['Flexion'],color='blue',linestyle=':')

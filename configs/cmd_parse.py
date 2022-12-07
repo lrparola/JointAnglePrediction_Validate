@@ -22,14 +22,14 @@ def parse_config(args=None):
     parser.add_argument('-c', '--config',
                         required=True, is_config_file=True,
                         help='config file path')
+    parser.add_argument('--train_linear_layer', type=str, default=False,
+                        help='train linear layer or all')
     parser.add_argument('--use_cuda',
                         type=lambda arg: arg.lower() == 'true',
                         default=True,
                         help='Use CUDA for the computations')
     parser.add_argument('--optim_type', type=str, default='adam',
                         help='The optimizer used')
-    parser.add_argument('--train_linear_layer', type=str, default=False,
-                        help='train linear layer or all')
     parser.add_argument('--epochs', type=int, default=999,
                         help='The number of epochs to finetune')
     parser.add_argument('--batch_size', type=int, default=16,
@@ -42,6 +42,8 @@ def parse_config(args=None):
                         help='The target activity')
     parser.add_argument('--joint', type=str, default='Knee', choices=['Ankle', 'Knee', 'Hip'],
                         help='The target joint')
+    parser.add_argument('--validation_norm_dict', type=str, default=False, 
+                        help='Would you like to normalize new data')
 
     args = parser.parse_args()
     args_dict = vars(args)
