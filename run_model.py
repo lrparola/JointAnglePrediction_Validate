@@ -220,15 +220,27 @@ def main(**kwargs):
     net.to(device=device)
 
     optimizer = build_optimizer(net, **kwargs)
-
+    #run this to load data with a ground truth mocap
     #all_dloader = setup_confirmation_data(norm_dict, device=device, **kwargs)
-    all_dloader = setup_overground_data(norm_dict, device=device, **kwargs)
-    #print('running')
+    
+    
+    
+    #run this to load data from in lab data without ground truth (still splits 80/20)
+    #all_dloader = setup_overground_data(norm_dict, device=device, **kwargs)
+    
+    
+    
+    #run this to load data  without a ground truth
     # all_dloader = setup_remote_data(norm_dict,device=device,
                            # **kwargs)
-    #print('loaded')
 
+
+
+    #run test model to apply model to data that also has ground truth
     #print(f'All RMSE: {test_model(net,all_dloader,device,False): .2f} (deg)')
+    
+    
+    #run this function to only apply model, not compare RMSE with ground truth
     apply_model(net,all_dloader,device,False)
     return
 
