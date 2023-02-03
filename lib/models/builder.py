@@ -14,10 +14,15 @@ import pickle
 import torch
 
 
-def build_nn_model(activity, joint, **kwargs):
+def build_nn_model(activity, joint,run_model=False,**kwargs):
     # Model checkpoint path
     model_dir = osp.join(_C.PATHS.MODEL_CHECKPOINT, activity)
-    state_dict_fname = osp.join(model_dir, f'{joint}_model.pt')
+    if run_model == False:
+        
+        state_dict_fname = osp.join(model_dir, f'{joint}_model.pt')
+    if run_model == True:
+        print('woo')
+        state_dict_fname = 'model_dict_80_20.pt'
     kwargs_fname = osp.join(model_dir, f'{joint}_model_kwargs.pkl')
     norm_dict_fname = osp.join(model_dir, f'{joint}_norm_dict.pt')
 
