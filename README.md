@@ -60,6 +60,6 @@ You will have `test_data_label.pt` and `train_data_label.pt` under the `IMU_Moca
 ## 4. Train Model
 To train model, run finetune.py -be sure to set a configuration (the baseline is saved as baseline.yaml), as well as change any other training paraemters. See options in configs.
 
-
-##5. Run Model 
+<br><br>
+## 5. Run Model 
 To run model, run run_model.py, be sure to use the baseline configuration
